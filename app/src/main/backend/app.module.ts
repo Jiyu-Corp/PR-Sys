@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common'
-import electronNestConfig from './electronNestConfig'
+
+// Config modules
+import electronNest from './configModules/electronNest'
+import typeORM from './configModules/typeORM'
+import envConfig from './configModules/envConfig'
 
 @Module({
   imports: [
-    electronNestConfig,
+    electronNest,
+    envConfig,
+    typeORM
   ],
   controllers: [],
   providers: [],
