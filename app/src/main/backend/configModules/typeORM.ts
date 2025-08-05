@@ -12,6 +12,6 @@ export default TypeOrmModule.forRootAsync({
         password: config.get<string>('DATABASE_PWRD'),
         database: config.get<string>('DATABASE_DB'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // ⚠️ Don't use this in production
+        synchronize: false,
     })
 });
