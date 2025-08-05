@@ -19,7 +19,7 @@ export class AccessController {
 
     @IpcHandle('access/forgotPassword')
     forgotPassword(@Payload() idAccess: number): Observable<boolean> {
-        return of(this.accessService.forgotPassword(idAccess));
+        return from(this.accessService.forgotPassword(idAccess));
     }
 
     @IpcHandle('access/login')
