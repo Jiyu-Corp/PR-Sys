@@ -33,12 +33,7 @@
     "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "assets": [
-      {
-        "include": "src/mail/templates/**/*",
-        "outDir": "dist/src/mail/templates"
-      }
-    ],
+    
   },
   "references": [
     {
