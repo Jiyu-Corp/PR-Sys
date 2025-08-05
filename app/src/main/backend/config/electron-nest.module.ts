@@ -1,8 +1,10 @@
+import { Module } from '@nestjs/common'
 import { join } from 'node:path'
 import { app, BrowserWindow } from 'electron'
 import { ElectronModule } from '@doubleshot/nest-electron'
 
-export default ElectronModule.registerAsync({
+@Module({
+  imports: [ElectronModule.registerAsync({
     useFactory: async () => {
         const isDev = !app.isPackaged
         const win = new BrowserWindow({
@@ -27,4 +29,8 @@ export default ElectronModule.registerAsync({
 
         return { win }
     },
-});
+  })],
+  controllers: [],
+  providers: [],
+})
+export class ElectronNestModule { }

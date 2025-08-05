@@ -1,7 +1,9 @@
+import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export default TypeOrmModule.forRootAsync({
+@Module({
+  imports: [TypeOrmModule.forRootAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: async (config: ConfigService): Promise<TypeOrmModuleOptions> => ({
@@ -14,4 +16,9 @@ export default TypeOrmModule.forRootAsync({
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: false,
     })
-});
+  })],
+  controllers: [],
+  providers: [],
+})
+
+export class DatabaseConfigModule { }

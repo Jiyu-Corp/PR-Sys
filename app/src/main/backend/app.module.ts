@@ -1,15 +1,10 @@
 import { Module } from '@nestjs/common'
 
-// Config modules
-import electronNest from './configModules/electronNest'
-import typeORM from './configModules/typeORM'
-import envConfig from './configModules/envConfig'
+import { ConfigModule } from './config/config.module'
 
 @Module({
   imports: [
-    electronNest,
-    envConfig,
-    typeORM
+    ConfigModule
   ],
   controllers: [],
   providers: [],
