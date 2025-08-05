@@ -6,8 +6,6 @@ import { ConfigModule } from '@nestjs/config';
     isGlobal: true,
     envFilePath: '.env',
     expandVariables: true,
-  })],
-  controllers: [],
-  providers: [],
+  })]
 })
 export class EnvConfigModule { }

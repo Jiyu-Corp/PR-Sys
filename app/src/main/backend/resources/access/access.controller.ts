@@ -1,35 +1,39 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Payload } from '@nestjs/microservices';
 import { AccessService } from './access.service';
-import { CreateAccessDto } from './dto/create-access.dto';
-import { UpdateAccessDto } from './dto/update-access.dto';
+import { IpcHandle } from '@doubleshot/nest-electron';
+import { from, Observable, of } from 'rxjs';
+import { Access } from './entities/access.entity';
+import { LoginDto } from './dto/login-dto';
+import { JWTTokenDto } from './dto/jwt-token-dto';
+import { ChangePasswordDto } from './dto/change-password-dto';
 
 @Controller()
 export class AccessController {
-  constructor(private readonly accessService: AccessService) {}
+    constructor(private readonly accessService: AccessService) {}
 
-  @MessagePattern('createAccess')
-  create(@Payload() createAccessDto: CreateAccessDto) {
-    return this.accessService.create(createAccessDto);
-  }
+    @IpcHandle('access/getDefault')
+    getDefault(): Observable<Access> {
+        return from(this.accessService.getDefault());
+    }
 
-  @MessagePattern('findAllAccess')
-  findAll() {
-    return this.accessService.findAll();
-  }
+    @IpcHandle('access/forgotPassword')
+    forgotPassword(@Payload() idAccess: number): Observable<boolean> {
+        return of(this.accessService.forgotPassword(idAccess));
+    }
 
-  @MessagePattern('findOneAccess')
-  findOne(@Payload() id: number) {
-    return this.accessService.findOne(id);
-  }
+    @IpcHandle('access/login')
+    login(@Payload() loginDto: LoginDto): Observable<JWTTokenDto> {
+        return of(this.accessService.login(loginDto));
+    }
 
-  @MessagePattern('updateAccess')
-  update(@Payload() updateAccessDto: UpdateAccessDto) {
-    return this.accessService.update(updateAccessDto.id, updateAccessDto);
-  }
+    @IpcHandle('access/logout')
+    logout(@Payload() jwtToken: string): Observable<boolean> {
+        return of(this.accessService.logout(jwtToken));
+    }
 
-  @MessagePattern('removeAccess')
-  remove(@Payload() id: number) {
-    return this.accessService.remove(id);
-  }
+    @IpcHandle('access/changePassword')
+    changePassword(@Payload() changePasswordDto: ChangePasswordDto): Observable<JWTTokenDto> {
+        return of(this.accessService.changePassword(changePasswordDto));
+    }
 }

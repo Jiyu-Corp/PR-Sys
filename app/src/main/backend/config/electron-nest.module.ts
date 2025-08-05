@@ -29,8 +29,6 @@ import { ElectronModule } from '@doubleshot/nest-electron'
 
         return { win }
     },
-  })],
-  controllers: [],
-  providers: [],
+  })]
 })
 export class ElectronNestModule { }

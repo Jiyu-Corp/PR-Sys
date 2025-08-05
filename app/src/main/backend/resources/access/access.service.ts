@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAccessDto } from './dto/create-access.dto';
-import { UpdateAccessDto } from './dto/update-access.dto';
+import { Access } from './entities/access.entity';
+import { LoginDto } from './dto/login-dto';
+import { ChangePasswordDto } from './dto/change-password-dto';
+import { JWTTokenDto } from './dto/jwt-token-dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AccessService {
-  create(createAccessDto: CreateAccessDto) {
-    return 'This action adds a new access';
-  }
+    constructor(
+        @InjectRepository(Access)
+        private readonly acessRepo: Repository<Access>
+    ) {}
 
-  findAll() {
-    return `This action returns all access`;
-  }
+    async getDefault(): Promise<Access> {
+        let firstCreatedAccess = await this.acessRepo
+            .findOne({
+                order: {
+                    idAccess: "ASC"
+                }
+            });
 
-  findOne(id: number) {
-    return `This action returns a #${id} access`;
-  }
+        return firstCreatedAccess;
+    }
 
-  update(id: number, updateAccessDto: UpdateAccessDto) {
-    return `This action updates a #${id} access`;
-  }
+    forgotPassword(idAccess: number): boolean {
+        // get access
+        // generate random password
+        // send email
+        // on sucess, update access password
 
-  remove(id: number) {
-    return `This action removes a #${id} access`;
-  }
+    }
+
+    login(loginDto: LoginDto): JWTTokenDto {
+
+    }
+
+    logout(jwtToken: string): boolean {
+
+    }
+
+    changePassword(changePasswordDto: ChangePasswordDto): JWTTokenDto {
+
+    }
 }
