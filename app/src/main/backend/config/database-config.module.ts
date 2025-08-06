@@ -13,8 +13,11 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
         username: config.get<string>('DATABASE_USER'),
         password: config.get<string>('DATABASE_PWRD'),
         database: config.get<string>('DATABASE_DB'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        autoLoadEntities: true,
         synchronize: false,
+        ssl: {
+            rejectUnauthorized: false
+        }
     })
   })]
 })

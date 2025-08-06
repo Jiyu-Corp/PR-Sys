@@ -6,7 +6,7 @@
   "description": "Vite + React + Electron with Doubleshot, so fast! ⚡",
   "main": "dist/main/index.js",
   "scripts": {
-    "dev": "rimraf dist && vite",
+    "dev": "rimraf dist && node scripts/copy-mail-templates.js && vite",
     "debug": "rimraf dist && vite -- --dsb-debug",
     "build": "rimraf dist && vite build",
     "lint": "eslint .",
@@ -45,6 +45,7 @@
     "eslint": "^9.32.0",
     "lint-staged": "^16.1.2",
     "rimraf": "^6.0.1",
+    "rollup-plugin-copy": "^3.5.0",
     "simple-git-hooks": "^2.13.0",
     "typescript": "^5.8.3",
     "vite": "^7.0.6",

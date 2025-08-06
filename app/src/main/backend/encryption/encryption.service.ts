@@ -4,11 +4,12 @@ import type { CipherGCMTypes } from 'crypto';
 
 @Injectable()
 export class EncryptionService {
+    private readonly encryptAlgorithm: CipherGCMTypes = 'aes-256-gcm';
+    private readonly ivLength = 12;
+    private readonly authTagLength = 16;
+
     constructor(
         @Inject('CRYPT_KEY') private readonly key: Buffer,
-        private readonly encryptAlgorithm: CipherGCMTypes = 'aes-256-gcm',
-        private readonly ivLength = 12,
-        private readonly authTagLength = 16
     ) {}
 
     encrypt(text: string): string {

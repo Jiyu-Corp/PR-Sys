@@ -27,6 +27,8 @@ import { ElectronModule } from '@doubleshot/nest-electron'
 
         win.loadURL(URL)
 
+        win.webContents.openDevTools({ mode: 'detach' });
+
         return { win }
     },
   })]

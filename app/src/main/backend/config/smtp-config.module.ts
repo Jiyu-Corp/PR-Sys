@@ -22,7 +22,7 @@ import { join } from 'path';
             from: `"No Reply" <${config.get<string>('SMTP_MAIL')}>`,
         },
         template: {
-            dir: join(__dirname, '..', 'mail' ,'templates'),
+            dir: join(__dirname, 'mail' ,'templates'),
             adapter: new HandlebarsAdapter(),
             options: {
                 strict: true,

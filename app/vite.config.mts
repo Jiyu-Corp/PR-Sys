@@ -1,8 +1,8 @@
 import { join } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig, normalizePath } from 'vite'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { VitePluginDoubleshot } from 'vite-plugin-doubleshot'
+import copy from 'rollup-plugin-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,15 +24,6 @@ export default defineConfig({
           outDir: 'dist/preload',
         },
       },
-    }),
-    viteStaticCopy({
-      targets: [
-        {
-          src: normalizePath(join(__dirname, 'src/main/backend/mail/templates')) + '/**/*',
-          dest: 'main/backend/mail/templates'
-        }
-      ],
-      structured: true
     })
   ],
   resolve: {
