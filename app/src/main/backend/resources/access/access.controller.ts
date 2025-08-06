@@ -3,37 +3,35 @@ import { Payload } from '@nestjs/microservices';
 import { AccessService } from './access.service';
 import { IpcHandle } from '@doubleshot/nest-electron';
 import { from, Observable, of } from 'rxjs';
-import { Access } from './entities/access.entity';
 import { LoginDto } from './dto/login-dto';
-import { JWTTokenDto } from './dto/jwt-token-dto';
+import { AuthTokenDto } from './dto/auth-token-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
+import { Public } from '@main/backend/decorators/public.decorator';
 
 @Controller()
 export class AccessController {
     constructor(private readonly accessService: AccessService) {}
 
+    @Public()
     @IpcHandle('access/getDefault')
-    getDefault(): Observable<Access> {
-        return from(this.accessService.getDefault());
+    getDefaultUsername(): Observable<string> {
+        return from(this.accessService.getDefault(true) as Promise<string>);
     }
 
+    @Public()
     @IpcHandle('access/forgotPassword')
     forgotPassword(@Payload() idAccess: number): Observable<boolean> {
         return from(this.accessService.forgotPassword(idAccess));
     }
 
+    @Public()
     @IpcHandle('access/login')
-    login(@Payload() loginDto: LoginDto): Observable<JWTTokenDto> {
-        return of(this.accessService.login(loginDto));
-    }
-
-    @IpcHandle('access/logout')
-    logout(@Payload() jwtToken: string): Observable<boolean> {
-        return of(this.accessService.logout(jwtToken));
+    login(@Payload() loginDto: LoginDto): Observable<AuthTokenDto> {
+        return from(this.accessService.login(loginDto));
     }
 
     @IpcHandle('access/changePassword')
-    changePassword(@Payload() changePasswordDto: ChangePasswordDto): Observable<JWTTokenDto> {
-        return of(this.accessService.changePassword(changePasswordDto));
+    changePassword(@Payload() changePasswordDto: ChangePasswordDto): Observable<AuthTokenDto> {
+        return from(this.accessService.changePassword(changePasswordDto));
     }
 }

@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Access } from './entities/access.entity';
 import { LoginDto } from './dto/login-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
-import { JWTTokenDto } from './dto/jwt-token-dto';
+import { AuthTokenDto } from './dto/auth-token-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MailService } from '../../mail/mail.service';
 import { randomBytes } from 'crypto';
 import { EncryptionService } from '@main/backend/encryption/encryption.service';
+import { AuthService } from '@main/backend/auth/auth.service';
 
 @Injectable()
 export class AccessService {
@@ -15,16 +16,19 @@ export class AccessService {
         @InjectRepository(Access)
         private readonly acessRepo: Repository<Access>,
         private readonly mailService: MailService,
-        private readonly encryptService: EncryptionService
+        private readonly encryptService: EncryptionService,
+        private readonly authService: AuthService
     ) {}
 
-    async getDefault(): Promise<Access> {
+    async getDefault(justUsername: boolean): Promise<Access|string> {
         const firstCreatedAccess = await this.acessRepo
             .findOne({
                 order: {
                     idAccess: "ASC"
                 }
             });
+        if(justUsername) 
+            return firstCreatedAccess.username;
 
         return firstCreatedAccess;
     }
@@ -59,15 +63,41 @@ export class AccessService {
         }
     }
 
-    login(loginDto: LoginDto): JWTTokenDto {
+    async login(loginDto: LoginDto): Promise<AuthTokenDto> {
+        const loginAccess = await this.acessRepo
+            .findOne({where: {
+                username: loginDto.username
+            }});
+        if(loginAccess === null) return null;
 
+        const isWrongPassword = this.encryptService.decrypt(loginAccess.password) == loginDto.password;
+        if(isWrongPassword) return null;
+        
+        const authToken = await this.authService.signPayload({ 
+            idAccess: loginAccess.idAccess,
+            username: loginAccess.username 
+        });
+
+        return { authToken: authToken };
     }
 
-    logout(jwtToken: string): boolean {
+    async changePassword(changePasswordDto: ChangePasswordDto): Promise<AuthTokenDto> {
+        const loginAccess = await this.acessRepo
+            .findOne({where: {
+                username: changePasswordDto.username
+            }});
+        if(loginAccess === null) return null;
 
-    }
+        const isWrongPassword = this.encryptService.decrypt(loginAccess.password) == changePasswordDto.password;
+        if(isWrongPassword) return null;
+        
+        const newPasswordEncrypted = this.encryptService.encrypt(changePasswordDto.newPassword);
+        loginAccess.password = newPasswordEncrypted;
+        await this.acessRepo.save(loginAccess);
 
-    changePassword(changePasswordDto: ChangePasswordDto): JWTTokenDto {
-
+        return this.login({
+            username: changePasswordDto.username,
+            password: changePasswordDto.newPassword
+        });
     }
 }
